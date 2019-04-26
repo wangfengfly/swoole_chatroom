@@ -1,0 +1,77 @@
+WebSocket Server消息定义
+
+1、客户端加入channel
+如果该channel不存在，server会创建该channel，ch_name是channel名称，acc_name是要加入channel的账号
+{
+    "type": "join_channel",
+    "acc_name": "student_zhangtongxue_11111",
+    "ch_name": "channel_1"
+              }
+
+2、 用户主动退出channel
+acc_name是用户账号，ch_name是要退出的频道
+{
+"type": "quit_channel",
+"acc_name": "student_zhangtongxue_11111",
+"ch_name": "channel_1"
+            }
+
+3、客户端发送点到点消息
+acc_name是发送账号，receive_acc是接收账号，ch_name是channel名，msg是发送的消息内容
+{
+"type": "p2p",
+"acc_name": "student_wangtongxue_99999",
+"receive_acc": "student_zhangtongxue_11111",
+"ch_name": "channel_1",
+"msg": "hello world"
+}
+
+4、 客户端发送channel内广播消息,
+acc_name是发送账号，ch_name是广播的频道，msg是广播内容
+{
+"type": "broadcast",
+"acc_name": "student_wangtongxue_99999",
+"ch_name": "channel_1",
+"msg": "hello world"
+}
+
+5、 用户异常退出频道后，server对本channel其他用户广播用户退出频道通知 
+acc_name是退出了频道ch_name的用户
+{
+"type": "quit_notify",
+"acc_name": "student_wangtongxue_99999",
+"ch_name": "channel_1"
+}
+
+6、用户加入频道后，server对本channel其他用户广播的用户加入频道通知
+acc_name加入频道ch_name
+{
+"type": "join_notify",
+"acc_name": "student_wangtongxue_99999",
+"ch_name": "channel_1"
+}
+
+7、 用户网络异常断开后，server对本channel内其他用户广播用户网络掉线的通知 
+acc_name为网络异常用户
+{
+"type": "offline_notify",
+"acc_name": "student_wangtongxue_99999",
+"ch_name":"channel_1"
+}
+
+8、客户端向server请求channel中当前所有用户的account列表
+{
+"type":"get_accountlist",
+"ch_name":"channel_1"
+}
+
+9、sever向客户端返回指定channel中当前所有用户的accout列表
+ch_name是指定channel，acc_list是ch_name里所有acc_name的列表
+{
+"type":"accountlist",
+"ch_name":"channel_1"
+"acc_list:["teacher_wang_111","student_wang_234","student_zhang_123"]
+}
+
+备注：
+每个消息加一个appkey， 通过salt计算一个md5，防止消息被篡改。
