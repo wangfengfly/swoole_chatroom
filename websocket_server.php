@@ -9,9 +9,10 @@ require_once(__DIR__.'/Log.php');
 
 class Server{
 
-    const IP = '10.134.109.235';
+    const IP = '127.0.0.1';
     const PORT = 32768;
 
+    const CA_PATH = '/usr/local/ca/';
 
     const REACTOR_NUM = 6;
     const WORKER_NUM = 16;
@@ -26,7 +27,7 @@ class Server{
 
     public function run(){
         $this->serv = new \swoole_websocket_server(self::IP, self::PORT);
-
+        
         $this->serv->set(array(
             'reactor_num' => self::REACTOR_NUM,
             'worker_num' => self::WORKER_NUM,
@@ -36,6 +37,8 @@ class Server{
             'tcp_keepidle' => 300,
             'tcp_keepinterval' => 60,
             'tcp_keepcount' => 10,
+            'ssl_cert_file' => self::CA_PATH.'xxx.com.pem',
+            'ssl_key_file' => self::CA_PATH.'xxx.com.key',
         ));
 
 
