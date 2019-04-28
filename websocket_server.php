@@ -32,6 +32,10 @@ class Server{
             'worker_num' => self::WORKER_NUM,
             'backlog' => self::BACKLOG,
             'max_request' => self::MAX_REQUEST,
+            'open_tcp_keepalive' => true,
+            'tcp_keepidle' => 300,
+            'tcp_keepinterval' => 60,
+            'tcp_keepcount' => 10,
         ));
 
 
