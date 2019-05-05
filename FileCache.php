@@ -47,14 +47,13 @@ class FileCache{
     public function remove($key){
         $file = $this->root_dir.'/'.$key;
         if(file_exists($file)){
-            @unlink($file);
+            return unlink($file);
         }
-        return $this;
+        return true;
     }
 
     public function removeRootDir(){
-        rmdir($this->root_dir);
-        return $this;
+        return rmdir($this->root_dir);
     }
 
 

@@ -7,6 +7,13 @@ WebSocket Server消息定义
     "acc_name": "student_zhangtongxue_11111",
     "ch_name": "channel_1"
               }
+加入channel的服务端响应, status为success表示加入成功，fail表示失败。
+{
+    "type": "join_channel_ack",
+    "acc_name": "student_zhangtongxue_11111",
+    "ch_name": "channel_1",
+    "status": "success"
+}
 
 2、 用户主动退出channel
 acc_name是用户账号，ch_name是要退出的频道
@@ -14,7 +21,14 @@ acc_name是用户账号，ch_name是要退出的频道
 "type": "quit_channel",
 "acc_name": "student_zhangtongxue_11111",
 "ch_name": "channel_1"
-            }
+}
+退出channel的服务端响应, status为success表示加入成功，fail表示失败
+{
+"type": "quit_channel_ack",
+"acc_name": "student_zhangtongxue_11111",
+"ch_name": "channel_1"
+"status": "success"
+}
 
 3、客户端发送点到点消息
 acc_name是发送账号，receive_acc是接收账号，ch_name是channel名，msg是发送的消息内容

@@ -122,21 +122,41 @@ class Server{
         $acc_name = trim($data['acc_name']);
         if($type == 'join_channel'){
             $value = json_encode(['fd' => $frame->fd, 'ch_name' => $ch_name]);
-            $fc->set(self::ACC_FD_KEY.$acc_name, $value);
-            $fc->set(self::FD_ACC_KEY.$frame->fd, json_encode(['acc_name' => $acc_name, 'ch_name' => $ch_name]));
-            $fc->setRootDir('/dev/shm/'.self::ROOT_DIR_PREFIX.$ch_name.'/')->set($acc_name, 1);
-            $acc_map = $this->getAccMaps($fc, $ch_name, $acc_name);
-            $fds = $this->getFds($acc_map);
-            $msg = ['type'=>'join_notify', 'acc_name'=>$acc_name, 'ch_name'=>$ch_name, 'appkey'=>''];
-            $this->broadcast($server, $fds, json_encode($msg));
+            $res1 = $fc->set(self::ACC_FD_KEY.$acc_name, $value);
+            $res2 = $fc->set(self::FD_ACC_KEY.$frame->fd, json_encode(['acc_name' => $acc_name, 'ch_name' => $ch_name]));
+            $res3 = $fc->setRootDir('/dev/shm/'.self::ROOT_DIR_PREFIX.$ch_name.'/')->set($acc_name, 1);
+            if($res1 && $res2 && $res3) {
+                $msg = ['type'=>'join_channel_ack', 'acc_name'=>$acc_name, 'ch_name'=>$ch_name, 'status'=>'success', 'appkey'=>''];
+                $server->push($frame->fd, json_encode($msg));
+
+                $acc_map = $this->getAccMaps($fc, $ch_name, $acc_name);
+                $fds = $this->getFds($acc_map);
+                $msg = ['type' => 'join_notify', 'acc_name' => $acc_name, 'ch_name' => $ch_name, 'appkey' => ''];
+                $this->broadcast($server, $fds, json_encode($msg));
+            }else{
+                $msg = ['type'=>'join_channel_ack', 'acc_name'=>$acc_name, 'ch_name'=>$ch_name, 'status'=>'fail', 'appkey'=>''];
+                $server->push($frame->fd, json_encode($msg));
+            }
         }
         else if($type == 'quit_channel'){
-            $acc_map = $this->getAccMaps($fc, $ch_name, $acc_name);
-            $fds = $this->getFds($acc_map);
-            $msg = [
-                'type'=>'quit_notify', 'acc_name'=>$acc_name, 'ch_name'=>$ch_name, 'appkey'=>''
-            ];
-            $this->broadcast($server, $fds, json_encode($msg));
+            $res = $fc->setRootDir('/dev/shm/')->remove(self::FD_ACC_KEY.$frame->fd);
+            $res = $res && $fc->setRootDir('/dev/shm/')->remove(self::ACC_FD_KEY.$acc_name);
+            $res = $res && $fc->setRootDir('/dev/shm/'.self::ROOT_DIR_PREFIX.$ch_name.'/')->remove($acc_name);
+            $res = $res && $fc->removeRootDir();
+            if($res) {
+                $acc_map = $this->getAccMaps($fc, $ch_name, $acc_name);
+                $fds = $this->getFds($acc_map);
+                $msg = [
+                    'type' => 'quit_notify', 'acc_name' => $acc_name, 'ch_name' => $ch_name, 'appkey' => ''
+                ];
+                $this->broadcast($server, $fds, json_encode($msg));
+
+                $msg = ['type'=>'quit_channel_ack', 'acc_name'=>$acc_name, 'ch_name'=>$ch_name, 'status'=>'success', 'appkey'=>''];
+                $server->push($frame->fd, json_encode($msg));
+            }else{
+                $msg = ['type'=>'quit_channel_ack', 'acc_name'=>$acc_name, 'ch_name'=>$ch_name, 'status'=>'fail', 'appkey'=>''];
+                $server->push($frame->fd, json_encode($msg));
+            }
         }
         else if($type == 'p2p'){
             $receive = trim($data['receive_acc']);
@@ -174,7 +194,8 @@ class Server{
 
         $fc->setRootDir('/dev/shm/')->remove(self::FD_ACC_KEY.$fd);
         $fc->setRootDir('/dev/shm/')->remove(self::ACC_FD_KEY.$acc_name);
-        $fc->setRootDir('/dev/shm/'.self::ROOT_DIR_PREFIX.$ch_name.'/')->remove($acc_name)->removeRootDir();
+        $fc->setRootDir('/dev/shm/'.self::ROOT_DIR_PREFIX.$ch_name.'/')->remove($acc_name);
+        $fc->removeRootDir();
 
         $this->broadcast($server, $fds, json_encode($msg));
     }
