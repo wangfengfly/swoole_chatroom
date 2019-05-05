@@ -122,10 +122,8 @@ class Server{
         $acc_name = trim($data['acc_name']);
         if($type == 'join_channel'){
             $value = json_encode(['fd' => $frame->fd, 'ch_name' => $ch_name]);
-            $res1 = $fc->set(self::ACC_FD_KEY.$acc_name, $value);
-            $res2 = $fc->set(self::FD_ACC_KEY.$frame->fd, json_encode(['acc_name' => $acc_name, 'ch_name' => $ch_name]));
-            $res3 = $fc->setRootDir('/dev/shm/'.self::ROOT_DIR_PREFIX.$ch_name.'/')->set($acc_name, 1);
-            if($res1 && $res2 && $res3) {
+            $res = $this->set($fc, $frame->fd, $acc_name, $value, $ch_name);
+            if($res) {
                 $msg = ['type'=>'join_channel_ack', 'acc_name'=>$acc_name, 'ch_name'=>$ch_name, 'status'=>'success', 'appkey'=>''];
                 $server->push($frame->fd, json_encode($msg));
 
@@ -139,10 +137,7 @@ class Server{
             }
         }
         else if($type == 'quit_channel'){
-            $res = $fc->setRootDir('/dev/shm/')->remove(self::FD_ACC_KEY.$frame->fd);
-            $res = $res && $fc->setRootDir('/dev/shm/')->remove(self::ACC_FD_KEY.$acc_name);
-            $res = $res && $fc->setRootDir('/dev/shm/'.self::ROOT_DIR_PREFIX.$ch_name.'/')->remove($acc_name);
-            $res = $res && $fc->removeRootDir();
+            $res = $this->remove($fc, $frame->fd, $acc_name, $ch_name);
             if($res) {
                 $acc_map = $this->getAccMaps($fc, $ch_name, $acc_name);
                 $fds = $this->getFds($acc_map);
@@ -192,12 +187,24 @@ class Server{
         $acc_map = $this->getAccMaps($fc, $ch_name, $acc_name);
         $fds = $this->getFds($acc_map);
 
-        $fc->setRootDir('/dev/shm/')->remove(self::FD_ACC_KEY.$fd);
-        $fc->setRootDir('/dev/shm/')->remove(self::ACC_FD_KEY.$acc_name);
-        $fc->setRootDir('/dev/shm/'.self::ROOT_DIR_PREFIX.$ch_name.'/')->remove($acc_name);
-        $fc->removeRootDir();
+        $this->remove($fc, $fd, $acc_name, $ch_name);
 
         $this->broadcast($server, $fds, json_encode($msg));
+    }
+
+    private function set($fc, $fd, $acc_name, $value, $ch_name){
+        $res = $fc->set(self::ACC_FD_KEY.$acc_name, $value);
+        $res = $res && $fc->set(self::FD_ACC_KEY.$fd, json_encode(['acc_name' => $acc_name, 'ch_name' => $ch_name]));
+        $res = $res && $fc->setRootDir('/dev/shm/'.self::ROOT_DIR_PREFIX.$ch_name.'/')->set($acc_name, 1);
+        return $res;
+    }
+
+    private function remove($fc, $fd, $acc_name, $ch_name){
+        $res = $fc->setRootDir('/dev/shm/')->remove(self::FD_ACC_KEY.$fd);
+        $res = $res && $fc->setRootDir('/dev/shm/')->remove(self::ACC_FD_KEY.$acc_name);
+        $res = $res && $fc->setRootDir('/dev/shm/'.self::ROOT_DIR_PREFIX.$ch_name.'/')->remove($acc_name);
+        $res = $res && $fc->removeRootDir();
+        return $res;
     }
 
 }
