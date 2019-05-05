@@ -158,13 +158,13 @@ class Server{
             $acc_map = $fc->setRootDir('/dev/shm/')->get(self::ACC_FD_KEY.$receive);
             $acc_map = json_decode($acc_map, true);
             if($acc_map) {
-                $server->push($acc_map['fd'], $data['msg']);
+                $server->push($acc_map['fd'], json_encode($data));
             }
         }
         else if($type == 'broadcast'){
             $acc_map = $this->getAccMaps($fc, $ch_name, $acc_name);
             $fds = $this->getFds($acc_map);
-            $this->broadcast($server, $fds, $data['msg']);
+            $this->broadcast($server, $fds, json_encode($data));
         }
         else if($type == 'get_accountlist'){
             $names = $fc->setRootDir('/dev/shm/'.self::ROOT_DIR_PREFIX.$ch_name.'/')->getFiles();
