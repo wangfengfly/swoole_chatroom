@@ -28,6 +28,8 @@ class Server{
     public function run(){
         //一定要加第三和第四个参数，开启websocket的wss协议模式
         $this->serv = new \swoole_websocket_server(self::IP, self::PORT, SWOOLE_BASE, SWOOLE_SOCK_TCP | SWOOLE_SSL);
+        //同时支持ws 80端口
+        $this->serv->addlistener(self::IP, 80, SWOOLE_SOCK_TCP);
         
         $this->serv->set(array(
             'reactor_num' => self::REACTOR_NUM,
