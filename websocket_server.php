@@ -26,7 +26,8 @@ class Server{
     private $serv;
 
     public function run(){
-        $this->serv = new \swoole_websocket_server(self::IP, self::PORT);
+        //一定要加第三和第四个参数，开启websocket的wss协议模式
+        $this->serv = new \swoole_websocket_server(self::IP, self::PORT, SWOOLE_BASE, SWOOLE_SOCK_TCP | SWOOLE_SSL);
         
         $this->serv->set(array(
             'reactor_num' => self::REACTOR_NUM,
