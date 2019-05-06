@@ -144,9 +144,7 @@ class Server{
             if($res) {
                 $acc_map = $this->getAccMaps($fc, $ch_name, $acc_name);
                 $fds = $this->getFds($acc_map);
-                $msg = [
-                    'type' => 'quit_notify', 'acc_name' => $acc_name, 'ch_name' => $ch_name, 'appkey' => ''
-                ];
+                $msg = ['type' => 'quit_notify', 'acc_name' => $acc_name, 'ch_name' => $ch_name, 'appkey' => ''];
                 $this->broadcast($server, $fds, json_encode($msg));
 
                 $msg = ['type'=>'quit_channel_ack', 'acc_name'=>$acc_name, 'ch_name'=>$ch_name, 'status'=>'success', 'appkey'=>''];
@@ -206,7 +204,7 @@ class Server{
         $res = $fc->setRootDir('/dev/shm/')->remove(self::FD_ACC_KEY.$fd);
         $res = $res && $fc->setRootDir('/dev/shm/')->remove(self::ACC_FD_KEY.$acc_name);
         $res = $res && $fc->setRootDir('/dev/shm/'.self::ROOT_DIR_PREFIX.$ch_name.'/')->remove($acc_name);
-        $res = $res && $fc->removeRootDir();
+        $fc->removeRootDir();
         return $res;
     }
 
