@@ -87,5 +87,12 @@ ch_name是指定channel，acc_list是ch_name里所有acc_name的列表
 "acc_list:["teacher_wang_111","student_wang_234","student_zhang_123"]
 }
 
+10、小程序端心跳包
+{
+"type":"ping",
+"acc_name":"student_tongxue_99999"
+"appkey": "",
+}
+
 备注：
 每个消息加一个appkey， 通过salt计算一个md5，防止消息被篡改。
