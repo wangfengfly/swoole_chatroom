@@ -25,7 +25,19 @@ class Server{
 
     private $serv;
 
+    private function clean(){
+        $acc_fd = self::ACC_FD_KEY;
+        $fd_acc = self::FD_ACC_KEY;
+        $ch = self::ROOT_DIR_PREFIX;
+
+        $cmd = "rm -f /dev/shm/$acc_fd* && rm -f /dev/shm/$fd_acc* && rm -rf /dev/shm/$ch*";
+        shell_exec($cmd);
+    }
+
     public function run(){
+
+        $this->clean();
+
         //一定要加第三和第四个参数，开启websocket的wss协议模式, 进程模式一定要是SWOOLE_PROCESS, 因为SWOOLE_BASE不支持IPC，无法进程间通信
         $this->serv = new \swoole_websocket_server(self::IP, self::PORT, SWOOLE_PROCESS, SWOOLE_SOCK_TCP | SWOOLE_SSL);
         //同时支持ws 80端口
