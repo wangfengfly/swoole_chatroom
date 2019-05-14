@@ -100,8 +100,8 @@ class Server{
             }
             $response->end($html);
         }else if($get['action'] == 'logs'){
-            $log = file_get_contents(__DIR__.'/log/server-'.date('YmdHis', strtotime('-1 hour')));
-            $log .= file_get_contents(__DIR__.'/log/server-'.date('YmdHis'));
+            $log = file_get_contents(__DIR__.'/log/server-'.date('YmdH', strtotime('-1 hour')));
+            $log .= file_get_contents(__DIR__.'/log/server-'.date('YmdH'));
             if(!$log){
                 $log = 'no log data.';
             }
