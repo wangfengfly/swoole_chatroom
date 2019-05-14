@@ -9,8 +9,8 @@ require_once(__DIR__.'/Log.php');
 
 class Server{
 
-    const IP = '127.0.0.1';
-    const PORT = 32768;
+    const IP = '10.134.109.235';
+    const PORT = 443;
 
     const CA_PATH = '/usr/local/ca/';
 
@@ -41,7 +41,7 @@ class Server{
         //一定要加第三和第四个参数，开启websocket的wss协议模式, 进程模式一定要是SWOOLE_PROCESS, 因为SWOOLE_BASE不支持IPC，无法进程间通信
         $this->serv = new \swoole_websocket_server(self::IP, self::PORT, SWOOLE_PROCESS, SWOOLE_SOCK_TCP | SWOOLE_SSL);
         //同时支持ws 80端口
-        $this->serv->addlistener(self::IP, 80, SWOOLE_SOCK_TCP);
+        $this->serv->addlistener(self::IP, 8090, SWOOLE_SOCK_TCP);
         
         $this->serv->set(array(
             'reactor_num' => self::REACTOR_NUM,
@@ -60,6 +60,7 @@ class Server{
 
         $this->serv->on('open', [$this, 'open']);
         $this->serv->on('message', [$this, 'message']);
+        $this->serv->on('request', [$this, 'request']);
         $this->serv->on('close', [$this, 'close']);
 
         $this->serv->start();
@@ -68,6 +69,44 @@ class Server{
 
     public function open(\swoole_websocket_server $server, \swoole_http_request $request){
         Log::getInstance('server')->write('Client: '.$request->fd.' opened.', 'debug');
+    }
+
+    public function request(Swoole\Http\Request $request, Swoole\Http\Response $response){
+        $get = $request->get;
+
+        if(!$get['action']){
+            $response->end("missing required parameters");
+        }else if($get['action'] == 'channels'){
+            $fc = new FileCache('/dev/shm');
+            $chs = $fc->getFiles();
+            $data = [];
+            foreach($chs as $ch){
+                if($ch && strpos($ch, self::ROOT_DIR_PREFIX) !== false) {
+                    $accs = $fc->setRootDir('/dev/shm/' . $ch . '/')->getFiles();
+                    $data[$ch] = $accs;
+                }
+            }
+            $html = '';
+            foreach($data as $ch=>$items){
+                $html .= "<h4>$ch</h4>";
+                $html .= "<ul>";
+                foreach($items as $item){
+                    $html .= "<li>$item</li>";
+                }
+                $html .= "</ul>";
+            }
+            if(!$html){
+                $html = 'no channels.';
+            }
+            $response->end($html);
+        }else if($get['action'] == 'logs'){
+            $log = file_get_contents(__DIR__.'/log/server-'.date('YmdHis', strtotime('-1 hour')));
+            $log .= file_get_contents(__DIR__.'/log/server-'.date('YmdHis'));
+            if(!$log){
+                $log = 'no log data.';
+            }
+            $response->end($log);
+        }
     }
 
     private function checkParam(&$data, $required=''){
