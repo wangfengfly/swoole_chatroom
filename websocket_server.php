@@ -42,7 +42,9 @@ class Server{
         $this->serv = new \swoole_websocket_server(self::IP, self::PORT, SWOOLE_PROCESS, SWOOLE_SOCK_TCP | SWOOLE_SSL);
         //同时支持ws 80端口
         $this->serv->addlistener(self::IP, 8090, SWOOLE_SOCK_TCP);
-        
+
+        //tcp_keepidle是tcp_keepalive底层探测，heartbeat是应用层心跳包探测，heartbeat是为了处理客户端的异常退出。
+        //当客户端因为崩溃等异常退出时，通过heartbeat服务器端也可以知道哪些客户端异常退出，从而发送quit_notify广播通知。
         $this->serv->set(array(
             'reactor_num' => self::REACTOR_NUM,
             'worker_num' => self::WORKER_NUM,
@@ -54,6 +56,8 @@ class Server{
             'tcp_keepcount' => 10,
             'ssl_cert_file' => self::CA_PATH.'xxx.com.pem',
             'ssl_key_file' => self::CA_PATH.'xxx.com.key',
+            'heartbeat_idle_time' => 180,
+            'heartbeat_check_interval' => 60,
         ));
 
 
