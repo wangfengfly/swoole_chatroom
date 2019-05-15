@@ -1,0 +1,53 @@
+[2019-05-14 19:11:08 @29816.0]	WARNING	swSocket_bind (ERROR 502): bind(10.134.109.235:443) failed. Error: Address already in use [98]
+[2019-05-14 19:12:15 @30917.0]	WARNING	swSocket_bind (ERROR 502): bind(10.134.109.235:80) failed. Error: Address already in use [98]
+[2019-05-14 19:12:32 @30960.0]	WARNING	swSocket_bind (ERROR 502): bind(10.134.109.235:443) failed. Error: Address already in use [98]
+[2019-05-14 19:13:24 *31135.15]	ERROR	zm_deactivate_swoole (ERROR 503): Fatal error: Uncaught Error: Call to undefined method Swoole\Http\Request::get() in /search/nginx/html/swoole_chatroom/websocket_server.php:75
+Stack trace:
+#0 {main}
+  thrown in /search/nginx/html/swoole_chatroom/websocket_server.php on line 75.
+[2019-05-14 19:13:24 $31113.0]	WARNING	swManager_check_exit_status: worker#15 abnormal exit, status=255, signal=0
+[2019-05-14 19:14:03 *32050.15]	ERROR	zm_deactivate_swoole (ERROR 503): Fatal error: Uncaught Error: Call to undefined method Swoole\Http\Request::get() in /search/nginx/html/swoole_chatroom/websocket_server.php:75
+Stack trace:
+#0 {main}
+  thrown in /search/nginx/html/swoole_chatroom/websocket_server.php on line 75.
+[2019-05-14 19:14:03 $31113.0]	WARNING	swManager_check_exit_status: worker#15 abnormal exit, status=255, signal=0
+[2019-05-14 19:14:23 *643.15]	ERROR	zm_deactivate_swoole (ERROR 503): Fatal error: Uncaught Error: Call to undefined method Swoole\Http\Request::get() in /search/nginx/html/swoole_chatroom/websocket_server.php:75
+Stack trace:
+#0 {main}
+  thrown in /search/nginx/html/swoole_chatroom/websocket_server.php on line 75.
+[2019-05-14 19:14:23 $621.0]	WARNING	swManager_check_exit_status: worker#15 abnormal exit, status=255, signal=0
+[2019-05-14 19:14:26 *628.0]	ERROR	zm_deactivate_swoole (ERROR 503): Fatal error: Uncaught Error: Call to undefined method Swoole\Http\Request::get() in /search/nginx/html/swoole_chatroom/websocket_server.php:75
+Stack trace:
+#0 {main}
+  thrown in /search/nginx/html/swoole_chatroom/websocket_server.php on line 75.
+[2019-05-14 19:14:26 $621.0]	WARNING	swManager_check_exit_status: worker#0 abnormal exit, status=255, signal=0
+[2019-05-14 19:14:50 *644.15]	ERROR	zm_deactivate_swoole (ERROR 503): Fatal error: Uncaught Error: Call to undefined method Swoole\Http\Request::get() in /search/nginx/html/swoole_chatroom/websocket_server.php:75
+Stack trace:
+#0 {main}
+  thrown in /search/nginx/html/swoole_chatroom/websocket_server.php on line 75.
+[2019-05-14 19:14:50 $621.0]	WARNING	swManager_check_exit_status: worker#15 abnormal exit, status=255, signal=0
+[2019-05-14 19:15:15 *747.15]	ERROR	zm_deactivate_swoole (ERROR 503): Fatal error: Uncaught Error: Call to undefined method Swoole\Http\Request::get() in /search/nginx/html/swoole_chatroom/websocket_server.php:75
+Stack trace:
+#0 {main}
+  thrown in /search/nginx/html/swoole_chatroom/websocket_server.php on line 75.
+[2019-05-14 19:15:15 $621.0]	WARNING	swManager_check_exit_status: worker#15 abnormal exit, status=255, signal=0
+[2019-05-14 19:17:01 *1813.15]	ERROR	zm_deactivate_swoole (ERROR 503): Fatal error: Uncaught Error: Call to undefined method Swoole\Http\Request::get() in /search/nginx/html/swoole_chatroom/websocket_server.php:75
+Stack trace:
+#0 {main}
+  thrown in /search/nginx/html/swoole_chatroom/websocket_server.php on line 75.
+[2019-05-14 19:17:01 $621.0]	WARNING	swManager_check_exit_status: worker#15 abnormal exit, status=255, signal=0
+[2019-05-14 19:17:46 *2824.15]	ERROR	zm_deactivate_swoole (ERROR 503): Fatal error: Uncaught Error: Call to undefined method Swoole\Http\Request::get() in /search/nginx/html/swoole_chatroom/websocket_server.php:75
+Stack trace:
+#0 {main}
+  thrown in /search/nginx/html/swoole_chatroom/websocket_server.php on line 75.
+[2019-05-14 19:17:46 $621.0]	WARNING	swManager_check_exit_status: worker#15 abnormal exit, status=255, signal=0
+[2019-05-14 19:18:07 *645.0]	ERROR	zm_deactivate_swoole (ERROR 503): Fatal error: Uncaught Error: Call to undefined method Swoole\Http\Request::get() in /search/nginx/html/swoole_chatroom/websocket_server.php:75
+Stack trace:
+#0 {main}
+  thrown in /search/nginx/html/swoole_chatroom/websocket_server.php on line 75.
+[2019-05-14 19:18:07 $621.0]	WARNING	swManager_check_exit_status: worker#0 abnormal exit, status=255, signal=0
+[2019-05-14 19:18:14 *3845.15]	ERROR	zm_deactivate_swoole (ERROR 503): Fatal error: Uncaught Error: Call to undefined method Swoole\Http\Request::get() in /search/nginx/html/swoole_chatroom/websocket_server.php:75
+Stack trace:
+#0 {main}
+  thrown in /search/nginx/html/swoole_chatroom/websocket_server.php on line 75.
+[2019-05-14 19:18:14 $621.0]	WARNING	swManager_check_exit_status: worker#15 abnormal exit, status=255, signal=0

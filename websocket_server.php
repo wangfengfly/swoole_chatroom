@@ -229,20 +229,22 @@ class Server{
     }
 
     public function close(\swoole_websocket_server $server, $fd){
-        Log::getInstance('server')->write("client fd: $fd closed.", 'debug');
 
         $fc = new FileCache('/dev/shm/');
         $map = $fc->get(self::FD_ACC_KEY.$fd);
-        $map = json_decode($map, true);
-        $acc_name = $map['acc_name'];
-        $ch_name = $map['ch_name'];
-        $msg = ['type'=>'quit_notify', 'acc_name'=>$acc_name, 'ch_name'=>$ch_name, 'appkey'=>''];
-        $acc_map = $this->getAccMaps($fc, $ch_name, $acc_name);
-        $fds = $this->getFds($acc_map);
+        if($map) {
+            Log::getInstance('server')->write("client fd: $fd closed.", 'debug');
+            $map = json_decode($map, true);
+            $acc_name = $map['acc_name'];
+            $ch_name = $map['ch_name'];
+            $msg = ['type' => 'quit_notify', 'acc_name' => $acc_name, 'ch_name' => $ch_name, 'appkey' => ''];
+            $acc_map = $this->getAccMaps($fc, $ch_name, $acc_name);
+            $fds = $this->getFds($acc_map);
 
-        $this->remove($fc, $fd, $acc_name, $ch_name);
+            $this->remove($fc, $fd, $acc_name, $ch_name);
 
-        $this->broadcast($server, $fds, json_encode($msg));
+            $this->broadcast($server, $fds, json_encode($msg));
+        }
     }
 
     private function set($fc, $fd, $acc_name, $value, $ch_name){
