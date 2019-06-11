@@ -260,9 +260,15 @@ class Server{
 
     private function remove($fc, $fd, $acc_name, $ch_name){
         $res = $fc->setRootDir('/dev/shm/')->remove(self::FD_ACC_KEY.$fd);
-        $res = $res && $fc->setRootDir('/dev/shm/')->remove(self::ACC_FD_KEY.$acc_name);
-        $res = $res && $fc->setRootDir('/dev/shm/'.self::ROOT_DIR_PREFIX.$ch_name.'/')->remove($acc_name);
-        $fc->removeRootDir();
+        //区分断网重连和长时间掉线，如果断网以后立马重连,acc_name不会变，不应该删除ACC_FD_KEY和频道
+        $data = $fc->setRootDir('/dev/shm/')->get(self::ACC_FD_KEY.$acc_name);
+        $data = json_decode($data, true);
+        if($fd == $data['fd']) {
+            $res = $res && $fc->setRootDir('/dev/shm/')->remove(self::ACC_FD_KEY . $acc_name);
+            $res = $res && $fc->setRootDir('/dev/shm/' . self::ROOT_DIR_PREFIX . $ch_name . '/')->remove($acc_name);
+            $fc->removeRootDir();
+        }
+
         return $res;
     }
 
